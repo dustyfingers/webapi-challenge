@@ -4,11 +4,15 @@ const middleware = require("../../middleware/middleware.js");
 
 const router = express.Router();
 
-
 // projects routes
 router.get("/:id", middleware.validateProjectId, async (req, res) => {
   const project = await db.get(req.params.id);
   res.status(200).json({ project });
+});
+
+router.get("/:id/actions", middleware.validateProjectId, async (req, res) => {
+  const actions = await db.getProjectActions(req.params.id);
+  res.status(200).json({ actions });
 });
 
 router.post("/", async (req, res) => {
@@ -22,9 +26,8 @@ router.put("/:id", middleware.validateProjectId, async (req, res) => {
 });
 
 router.delete("/:id", middleware.validateProjectId, async (req, res) => {
-    const numOfRecordsDeleted = await db.remove(req.params.id);
-    res.status(200).json({ numOfRecordsDeleted });
+  const numOfRecordsDeleted = await db.remove(req.params.id);
+  res.status(200).json({ numOfRecordsDeleted });
 });
-
 
 module.exports = router;
