@@ -1,22 +1,30 @@
 const express = require("express");
-const db = require('../../data/helpers/projectModel');
+const db = require("../../data/helpers/projectModel");
+const middleware = require("../../middleware/middleware.js");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
 
+// projects routes
+router.get("/:id", middleware.validateProjectId, async (req, res) => {
+  const project = await db.get(req.params.id);
+  res.status(200).json({ project });
 });
 
-router.post('/', (req, res) => {
-
+router.post("/", async (req, res) => {
+  const newProject = await db.insert(req.body);
+  res.status(200).json({ newProject });
 });
 
-router.put('/:id', (req, res) => {
-
+router.put("/:id", middleware.validateProjectId, async (req, res) => {
+  const updatedProject = await db.update(req.params.id, req.body);
+  res.status(200).json({ updatedProject });
 });
 
-router.delete('/:id', (req, res) => {
-    
+router.delete("/:id", middleware.validateProjectId, async (req, res) => {
+    const numOfRecordsDeleted = await db.remove(req.params.id);
+    res.status(200).json({ numOfRecordsDeleted });
 });
+
 
 module.exports = router;
